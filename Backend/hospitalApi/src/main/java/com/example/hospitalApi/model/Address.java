@@ -19,9 +19,9 @@ import org.hibernate.annotations.UuidGenerator;
 public class Address {
     @Id
     @UuidGenerator
-    @Column(name = "id", unique = true, updatable = false)
+    @Column(name = "address_id", unique = true, updatable = false)
     private String id;
     private String street;
-    private Integer number;
-    private String letter;
+    private String city;
+    private String number;
 }

@@ -10,10 +10,14 @@ import com.example.hospitalApi.repository.IPatientRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +47,14 @@ public class PatientServiceImpl implements IPatientService {
         return patientDTOS;
     }
 
+
+
+    @Override
+    public Page<Patient> getAllByPage(int page, int size){
+        return patientRepo.findAll(PageRequest.of(page,size, Sort.by("name")));
+
+    }
+
     @Override
     public PatientDTO getById(String id) {
         Patient patient = patientRepo.findById(id).orElseThrow(() -> new RuntimeException("Patient with id "+ id + "not found"));
@@ -52,13 +64,12 @@ public class PatientServiceImpl implements IPatientService {
     @Override
     public PatientDTO update(PatientDTO patientDTO, String id) {
         Patient patient = patientRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Patient with id "+ id + " not found."));
-        patient.setFirstName(patient.getFirstName());
-        patient.setLastName(patient.getLastName());
+        patient.setFirstName(patientDTO.getFirstName());
+        patient.setLastName(patientDTO.getLastName());
         Address address = addressRepo.findById(patientDTO.getAddress().getId()).orElseThrow(() -> new EntityNotFoundException("Address with id "+ id + " not found."));
         patient.setAddress(address);
         patient.setEmail(patientDTO.getEmail());
         patient.setPhone(patientDTO.getPhone());
-        patient.setPhotoUrl(patientDTO.getPhotoUrl());
         patient.setUsername(patientDTO.getUsername());
         patient.setHealthCardNumber(patientDTO.getHealthCardNumber());
         patientRepo.save(patient);
