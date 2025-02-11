@@ -22,8 +22,6 @@ public class PatientDTO {
     @NotNull
     private String phone;
     @NotNull
-    private String photoUrl;
-    @NotNull
     private String healthCardNumber;
     private String username;
     private Doctor doctor;

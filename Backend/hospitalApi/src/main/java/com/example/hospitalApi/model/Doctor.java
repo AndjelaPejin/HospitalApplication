@@ -2,10 +2,7 @@ package com.example.hospitalApi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +16,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@Table(name = "doctor")
 public class Doctor extends BaseEntity{
+    private String photoUrl;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", unique = true)
+    private Address address;
+
     @JsonManagedReference(value = "patient-doctors")
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
     private List<Patient> patients = new ArrayList<>();
+
+    @JsonManagedReference(value = "appointment-doctors")
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+    private List<Appointment> appointments = new ArrayList<>();
 }
